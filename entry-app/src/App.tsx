@@ -1,8 +1,8 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { Suspense, useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 
-// const ManageCustomersApp = lazy(() => import('manage-customers-app/ManageCustomersApp'));
-// const ViewCustomerApp = lazy(() => import('view-customer-app/ViewCustomerApp'));
+const ManageCustomersApp = lazy(() => import('manage-customers-app/ManageCustomersApp'));
+const ViewCustomerApp = lazy(() => import('view-customers-app/ViewCustomersApp'));
 
 export default function App() {
   const [name, setName] = useState('');
@@ -38,7 +38,7 @@ export default function App() {
         path="/manage/*"
         element={
           <Suspense fallback={<div>Loading...</div>}>
-            {/* <ManageCustomersApp /> */}
+            <ManageCustomersApp />
           </Suspense>
         }
       />
@@ -46,7 +46,7 @@ export default function App() {
         path="/view/:id"
         element={
           <Suspense fallback={<div>Loading...</div>}>
-            {/* <ViewCustomerApp /> */}
+            <ViewCustomerApp />
           </Suspense>
         }
       />
