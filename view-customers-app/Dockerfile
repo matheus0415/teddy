@@ -1,23 +1,18 @@
-# Etapa 1: Build
+# Etapa 1 - Build com Vite
 FROM node:20-alpine AS builder
 
 WORKDIR /app
-
 COPY . .
-
 RUN npm install && npm run build
 
-# Etapa 2: Servir com Nginx
+# Etapa 2 - Servir com NGINX
 FROM nginx:alpine
 
-# Remove a configuração padrão do Nginx
+# Remove configuração default
 RUN rm -rf /etc/nginx/conf.d
 
-# Copia a build gerada para a pasta pública do Nginx
+# Adiciona nova config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copia os arquivos da build Vite
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Exponha a porta padrão do Nginx
-EXPOSE 80
-
-# Inicia o Nginx em primeiro plano
-CMD ["nginx", "-g", "daemon off;"]
