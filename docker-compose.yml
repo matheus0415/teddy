@@ -1,16 +1,16 @@
 version: '3.8'
 services:
   entry-app:
-    build: ./entry-app
+    build: ./apps/entry-app
     ports:
       - '3000:80'
 
   manage-customers-app:
-    build: ./manage-customers-app
+    build: ./apps/manage-customers-app
     ports:
       - '3001:80'
 
   view-customers-app:
-    build: ./view-customers-app
+    build: ./apps/view-customers-app
     ports:
       - '3002:80'
