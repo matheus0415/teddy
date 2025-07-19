@@ -8,8 +8,10 @@ export default defineConfig({
     federation({
       name: 'entry-app',
       remotes: {
-        'manage-customers-app': 'http://localhost:3001/assets/remoteEntry.js',
-        'view-customers-app': 'http://localhost:3002/assets/remoteEntry.js',
+        'manage-customers-app':
+          'http://localhost:3001/assets/remoteEntry.js',
+        'view-customers-app':
+          'http://localhost:3002/assets/remoteEntry.js',
       },
       shared: ['react', 'react-dom', 'react-router-dom'],
     }),
