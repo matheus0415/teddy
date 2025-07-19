@@ -1,20 +1,21 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 export default function Entry() {
-  const [name, setName] = useState("")
+  const [name, setName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (name.trim()) {
-      console.log("Nome digitado:", name)
-      // Add your logic here for what happens when user enters their name
+      console.log('Nome digitado:', name);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-xl font-medium text-gray-900 text-center">Olá, seja bem-vindo!</h1>
+        <h1 className="text-xl font-medium text-gray-900 text-center">
+          Olá, seja bem-vindo!
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -34,5 +35,5 @@ export default function Entry() {
         </form>
       </div>
     </div>
-  )
+  );
 }

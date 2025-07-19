@@ -11,9 +11,19 @@ export default defineConfig({
       exposes: {
         './ViewCustomersApp': './src/ViewCustomersApp.tsx',
       },
-      shared: ['react', 'react-dom', 'react-router-dom'],
+      shared: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@/packages/ui',
+      ],
     }),
   ],
+  resolve: {
+    alias: {
+      '@': '../../',
+    },
+  },
   build: {
     target: 'esnext',
     minify: false,

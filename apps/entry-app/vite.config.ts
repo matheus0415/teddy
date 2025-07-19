@@ -13,9 +13,19 @@ export default defineConfig({
         'view-customers-app':
           'http://localhost:3002/assets/remoteEntry.js',
       },
-      shared: ['react', 'react-dom', 'react-router-dom'],
+      shared: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@/packages/ui',
+      ],
     }),
   ],
+  resolve: {
+    alias: {
+      '@': '../../',
+    },
+  },
   build: {
     target: 'esnext',
     minify: false,

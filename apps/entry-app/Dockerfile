@@ -2,8 +2,15 @@
 FROM node:20-alpine AS builder
 
 WORKDIR /app
-COPY . .
-RUN npm install && npm run build
+
+# Copiar arquivos do monorepo
+COPY package*.json ./
+COPY apps/entry-app ./apps/entry-app/
+COPY config ./config/
+COPY packages ./packages/
+
+# Instalar dependências na raiz e construir o app
+RUN npm install && npm run build -w apps/entry-app
 
 # Etapa 2 - Servir com NGINX
 FROM nginx:alpine
@@ -12,7 +19,7 @@ FROM nginx:alpine
 RUN rm -rf /etc/nginx/conf.d
 
 # Adiciona nova config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/entry-app/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia os arquivos da build Vite
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./apps/entry-app/dist /usr/share/nginx/html
