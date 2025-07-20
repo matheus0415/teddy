@@ -1,4 +1,4 @@
-function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
+function Logo(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width={100}
@@ -34,4 +34,4 @@ function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export default SvgComponent;
+export default Logo;
