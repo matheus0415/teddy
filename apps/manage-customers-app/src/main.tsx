@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './store';
+import { SelectedClientsProvider } from './contexts/SelectedClientsContext';
 import Dashboard from './features/clients/ui/pages/Dashboard';
 import './index.css';
 
@@ -11,13 +12,15 @@ const isStandalone = window.location === window.parent.location;
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-      {isStandalone ? (
-        <BrowserRouter>
+      <SelectedClientsProvider>
+        {isStandalone ? (
+          <BrowserRouter>
+            <Dashboard />
+          </BrowserRouter>
+        ) : (
           <Dashboard />
-        </BrowserRouter>
-      ) : (
-        <Dashboard />
-      )}
+        )}
+      </SelectedClientsProvider>
     </Provider>
   </StrictMode>
 );

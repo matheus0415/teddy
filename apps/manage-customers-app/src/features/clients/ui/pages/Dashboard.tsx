@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Edit, Trash2, Menu, User } from 'lucide-react';
+import { Plus, Edit, Trash2, Menu, User, Check } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../store/hooks';
 import { getClientRequest } from '../../presentation/redux/actions/get-client-actions';
+import { useSelectedClients } from '../../../../contexts/useSelectedClients';
 import type { Client } from '../../domain/models/client';
 import Sidebar from '../components/Sidebar';
 import Logo from '../../../../components/icons/Logo';
@@ -13,6 +14,8 @@ import Logo from '../../../../components/icons/Logo';
 export default function Dashboard() {
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { addClient, removeClient, isClientSelected } =
+    useSelectedClients();
 
   const {
     clients: allClients,
@@ -113,31 +116,53 @@ export default function Dashboard() {
   );
 
   const ClientCard = useCallback(
-    ({ client }: { client: Client }) => (
-      <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-        <div className="text-center">
-          <h3 className="font-semibold text-lg text-gray-900 mb-2">
-            {client.name}
-          </h3>
-          <div className="text-sm text-gray-600 space-y-1 mb-3">
-            <p>Salário: {client.salary}</p>
-            <p>Empresa: {client.company}</p>
-          </div>
-          <div className="flex justify-between items-center">
-            <button className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded">
-              <Plus size={16} />
-            </button>
-            <button className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded">
-              <Edit size={16} />
-            </button>
-            <button className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded">
-              <Trash2 size={16} />
-            </button>
+    ({ client }: { client: Client }) => {
+      const selected = isClientSelected(client.id);
+
+      const handleToggleSelection = () => {
+        if (selected) {
+          removeClient(client.id);
+        } else {
+          addClient(client);
+        }
+      };
+
+      return (
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+          <div className="text-center">
+            <h3 className="font-semibold text-lg text-gray-900 mb-2">
+              {client.name}
+            </h3>
+            <div className="text-sm text-gray-600 space-y-1 mb-3">
+              <p>Salário: {client.salary}</p>
+              <p>Empresa: {client.company}</p>
+            </div>
+            <div className="flex justify-between items-center">
+              <button
+                className={`p-2 rounded transition-colors ${
+                  selected
+                    ? 'text-green-500 bg-green-50 hover:bg-green-100'
+                    : 'text-gray-500 hover:text-orange-500 hover:bg-orange-50'
+                }`}
+                onClick={handleToggleSelection}
+                title={
+                  selected ? 'Remover seleção' : 'Selecionar cliente'
+                }
+              >
+                {selected ? <Check size={16} /> : <Plus size={16} />}
+              </button>
+              <button className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded">
+                <Edit size={16} />
+              </button>
+              <button className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded">
+                <Trash2 size={16} />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    ),
-    []
+      );
+    },
+    [isClientSelected, addClient, removeClient]
   );
 
   const LoadingSkeleton = useCallback(

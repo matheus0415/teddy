@@ -13,9 +13,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       thunk: false,
       serializableCheck: {
-        ignoredActions: [
-          'saga/SAGA_LOCATION',
-        ],
+        ignoredActions: ['saga/SAGA_LOCATION'],
       },
     }).concat(sagaMiddleware),
   devTools: process.env.NODE_ENV !== 'production',
