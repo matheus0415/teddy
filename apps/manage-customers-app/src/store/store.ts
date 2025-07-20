@@ -3,27 +3,18 @@ import createSagaMiddleware from 'redux-saga';
 import { rootReducer } from './root-reducer';
 import { rootSaga } from './root-saga';
 
-// Estado inicial global (pode ser expandido conforme necessário)
-export const initialGlobalState = {
-  // O estado inicial dos modules é definido em cada reducer individual
-  // Este objeto pode conter configurações globais se necessário
-};
+export const initialGlobalState = {};
 
-// Create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
-// Create the store
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      thunk: false, // Desabilitar thunk pois estamos usando saga
+      thunk: false,
       serializableCheck: {
-        // Ignore these action types from saga
         ignoredActions: [
-          // Actions que o Redux-Saga usa internamente
           'saga/SAGA_LOCATION',
-          // Adicione outras ações se necessário
         ],
       },
     }).concat(sagaMiddleware),

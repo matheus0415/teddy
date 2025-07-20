@@ -1,4 +1,7 @@
-import type { ClientsResponse } from '../types/get-client-types';
+import type {
+  ClientsResponse,
+  GetClientRequestPayload,
+} from '../types/get-client-types';
 import {
   GET_CLIENT_ERROR,
   GET_CLIENT_REQUEST,
@@ -10,8 +13,11 @@ import type {
   GetClientErrorAction,
 } from '../reducers/get-client-reducer';
 
-export const getClientRequest = (): GetClientRequestAction => ({
+export const getClientRequest = (
+  payload?: GetClientRequestPayload
+): GetClientRequestAction => ({
   type: GET_CLIENT_REQUEST,
+  payload,
 });
 
 export const getClientSuccess = (

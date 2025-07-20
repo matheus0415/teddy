@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Plus, Edit, Trash2, Menu, User } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import {
   useAppDispatch,
   useAppSelector,
@@ -11,6 +12,8 @@ import Logo from '../../../../components/icons/Logo';
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const {
     clients: allClients,
     totalPages,
@@ -19,19 +22,33 @@ export default function Dashboard() {
   } = useAppSelector((state) => state.clients);
 
   const [activeTab, setActiveTab] = useState('Clientes');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(15);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userName, setUserName] = useState('Usuário');
 
+  const currentPageFromUrl = parseInt(
+    searchParams.get('page') || '1',
+    10
+  );
+  const limitFromUrl = parseInt(
+    searchParams.get('limit') || '10',
+    10
+  );
+
+  const [itemsPerPage, setItemsPerPage] = useState(limitFromUrl);
+
+  useEffect(() => {
+    setItemsPerPage(limitFromUrl);
+  }, [limitFromUrl]);
+
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  // Dispatch request to fetch clients when component mounts
   useEffect(() => {
-    dispatch(getClientRequest());
-  }, [dispatch]);
+    const pageToFetch = currentPageFromUrl - 1;
+    dispatch(
+      getClientRequest({ page: pageToFetch, limit: limitFromUrl })
+    );
+  }, [dispatch, currentPageFromUrl, limitFromUrl]);
 
-  // Carrega o nome do usuário do localStorage
   useEffect(() => {
     const savedName = localStorage.getItem('userName');
     if (savedName) {
@@ -39,35 +56,34 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Handle items per page change
-  const handleItemsPerPageChange = (newItemsPerPage: number) => {
-    setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
-  };
+  const handleItemsPerPageChange = useCallback(
+    (newItemsPerPage: number) => {
+      setSearchParams({
+        page: '1',
+        limit: newItemsPerPage.toString(),
+      });
+    },
+    [setSearchParams]
+  );
 
-  // Use clients directly from Redux (API already handles pagination)
   const clients = allClients;
 
-  // Pagination logic
-  const getVisiblePages = () => {
+  const getVisiblePages = useMemo(() => {
     const pages = [];
 
     if (totalPages <= 7) {
-      // Show all pages if 7 or fewer
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
       pages.push(1);
 
-      if (currentPage > 4) {
+      if (currentPageFromUrl > 4) {
         pages.push('...');
       }
 
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
+      const start = Math.max(2, currentPageFromUrl - 1);
+      const end = Math.min(totalPages - 1, currentPageFromUrl + 1);
 
       for (let i = start; i <= end; i++) {
         if (!pages.includes(i)) {
@@ -75,51 +91,103 @@ export default function Dashboard() {
         }
       }
 
-      if (currentPage < totalPages - 3) {
+      if (currentPageFromUrl < totalPages - 3) {
         pages.push('...');
       }
 
-      // Always show last page
       if (!pages.includes(totalPages)) {
         pages.push(totalPages);
       }
     }
 
     return pages;
-  };
+  }, [totalPages, currentPageFromUrl]);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('page', page.toString());
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams]
+  );
 
-  const ClientCard = ({ client }: { client: Client }) => (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-      <div className="text-center">
-        <h3 className="font-semibold text-lg text-gray-900 mb-2">
-          {client.name}
-        </h3>
-        <div className="text-sm text-gray-600 space-y-1 mb-3">
-          <p>Salário: {client.salary}</p>
-          <p>Empresa: {client.company}</p>
-        </div>
-        <div className="flex justify-between items-center">
-          <button className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded">
-            <Plus size={16} />
-          </button>
-          <button className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded">
-            <Edit size={16} />
-          </button>
-          <button className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded">
-            <Trash2 size={16} />
-          </button>
+  const ClientCard = useCallback(
+    ({ client }: { client: Client }) => (
+      <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+        <div className="text-center">
+          <h3 className="font-semibold text-lg text-gray-900 mb-2">
+            {client.name}
+          </h3>
+          <div className="text-sm text-gray-600 space-y-1 mb-3">
+            <p>Salário: {client.salary}</p>
+            <p>Empresa: {client.company}</p>
+          </div>
+          <div className="flex justify-between items-center">
+            <button className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded">
+              <Plus size={16} />
+            </button>
+            <button className="p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded">
+              <Edit size={16} />
+            </button>
+            <button className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded">
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    ),
+    []
+  );
+
+  const LoadingSkeleton = useCallback(
+    () => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        {Array.from({ length: itemsPerPage }).map((_, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 animate-pulse"
+          >
+            <div className="text-center">
+              <div className="h-6 bg-gray-200 rounded mb-2"></div>
+              <div className="space-y-2 mb-3">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+                <div className="w-8 h-8 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ),
+    [itemsPerPage]
+  );
+
+  const ErrorMessage = useCallback(
+    ({ error }: { error: string }) => (
+      <div className="flex flex-col justify-center items-center h-64 bg-red-50 rounded-lg border border-red-200">
+        <div className="text-red-500 text-6xl mb-4">⚠️</div>
+        <h2 className="text-xl font-semibold text-red-700 mb-2">
+          Oops! Algo deu errado
+        </h2>
+        <p className="text-red-600 mb-4">{error}</p>
+        <button
+          onClick={() => setSearchParams({ page: '1', limit: '10' })}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    ),
+    [setSearchParams]
   );
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* Sidebar - fixed width container to prevent layout shifts */}
       <div
         className={`transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-64' : 'w-0'
@@ -128,9 +196,7 @@ export default function Dashboard() {
         <Sidebar isOpen={sidebarOpen} />
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col transition-all duration-300">
-        {/* Header */}
         <header className="bg-white border-b border-gray-200">
           <div className="flex items-center px-6 py-4 relative">
             <div className="flex items-center space-x-4">
@@ -142,7 +208,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Navigation Tabs */}
             <div className="flex-1 flex justify-center">
               <div className="flex space-x-4 md:space-x-6 lg:space-x-8 px-2">
                 <button
@@ -192,19 +257,10 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Content */}
         <main className="flex-1 p-6 overflow-y-auto">
-          {loading && (
-            <div className="flex justify-center items-center h-64">
-              <p className="text-lg">Loading clients...</p>
-            </div>
-          )}
+          {loading && <LoadingSkeleton />}
 
-          {error && (
-            <div className="flex justify-center items-center h-64">
-              <p className="text-lg text-red-500">Error: {error}</p>
-            </div>
-          )}
+          {error && <ErrorMessage error={error} />}
 
           {!loading && !error && (
             <>
@@ -236,23 +292,20 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Client Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 {clients.map((client: Client) => (
                   <ClientCard key={client.id} client={client} />
                 ))}
               </div>
 
-              {/* Create Client Button */}
               <div className="mb-6">
                 <button className="w-full border-2 border-dashed border-orange-300 text-orange-500 py-3 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors">
                   Criar cliente
                 </button>
               </div>
 
-              {/* Pagination */}
               <div className="flex justify-center space-x-2">
-                {getVisiblePages().map((page, index) => {
+                {getVisiblePages.map((page, index) => {
                   if (page === '...') {
                     return (
                       <span
@@ -269,7 +322,7 @@ export default function Dashboard() {
                     <button
                       key={pageNum}
                       className={`px-3 py-2 rounded transition-colors ${
-                        currentPage === pageNum
+                        currentPageFromUrl === pageNum
                           ? 'bg-orange-500 text-white'
                           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}

@@ -8,13 +8,20 @@ import { GetClientService } from '../../../service/get-client-service';
 import { GetClientRepository } from '../../../data/repositories/get-client-repository';
 import { GetClientController } from '../../controllers/get-client-controller';
 import { GET_CLIENT_REQUEST } from '../types/get-client-types';
+import type { GetClientRequestAction } from '../reducers/get-client-reducer';
 
-function* getClientSaga(): SagaIterator {
+function* getClientSaga(
+  action: GetClientRequestAction
+): SagaIterator {
   try {
     const service = new GetClientService();
     const repository = new GetClientRepository(service);
     const controller = new GetClientController(repository);
-    const clients = yield call([controller, controller.get]);
+    const { page, limit } = action.payload || {};
+    const clients = yield call([controller, controller.get], {
+      page,
+      limit,
+    });
     yield put(getClientSuccess(clients));
   } catch (error: unknown) {
     const message =

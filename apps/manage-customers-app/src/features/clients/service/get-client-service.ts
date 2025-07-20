@@ -2,7 +2,10 @@ import type { IGetClientClient } from '../data/data-sources/i-get-client-client'
 import { api } from '../../../config/api';
 import type { HttpResponse } from '../../../config/api-types';
 import type { Client } from '../domain/models/client';
-import type { ClientsResponse } from '../presentation/redux/types/get-client-types';
+import type {
+  ClientsResponse,
+  GetClientParams,
+} from '../presentation/redux/types/get-client-types';
 
 interface TeddyUser {
   id: number;
@@ -20,13 +23,16 @@ interface TeddyApiResponse {
 }
 
 export class GetClientService implements IGetClientClient {
-  async get(): Promise<HttpResponse<ClientsResponse>> {
+  async get(
+    params: GetClientParams = {}
+  ): Promise<HttpResponse<ClientsResponse>> {
+    const { page = 0, limit = 10 } = params;
+
     try {
       const response = await api.get<TeddyApiResponse>(
-        '/users?page=0&limit=10'
+        `/users?page=${page}&limit=${limit}`
       );
 
-      // Transform TeddyUser to Client
       const clients: Client[] = response.data.clients.map((user) => ({
         id: user.id.toString(),
         name: user.name,

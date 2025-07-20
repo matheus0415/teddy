@@ -4,10 +4,12 @@ import {
   GET_CLIENT_REQUEST,
   GET_CLIENT_SUCCESS,
   type ClientsResponse,
+  type GetClientRequestPayload,
 } from '../types/get-client-types';
 
 export interface GetClientRequestAction {
   type: typeof GET_CLIENT_REQUEST;
+  payload?: GetClientRequestPayload;
 }
 
 export interface GetClientSuccessAction {

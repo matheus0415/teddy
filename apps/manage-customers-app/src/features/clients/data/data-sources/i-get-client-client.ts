@@ -1,6 +1,11 @@
 import type { HttpResponse } from '../../../../config/api-types';
-import type { ClientsResponse } from '../../presentation/redux/types/get-client-types';
+import type {
+  ClientsResponse,
+  GetClientParams,
+} from '../../presentation/redux/types/get-client-types';
 
 export interface IGetClientClient {
-  get(): Promise<HttpResponse<ClientsResponse>>;
+  get(
+    _params?: GetClientParams
+  ): Promise<HttpResponse<ClientsResponse>>;
 }
