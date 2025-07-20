@@ -7,6 +7,20 @@ export default function Entry() {
     e.preventDefault();
     if (name.trim()) {
       console.log('Nome digitado:', name);
+      // Salva o nome no localStorage para uso posterior
+      const userName = name.trim();
+      localStorage.setItem('userName', userName);
+
+      // Log para verificar se foi salvo
+      console.log(
+        'Nome salvo no localStorage:',
+        localStorage.getItem('userName')
+      );
+
+      // Pequeno delay para garantir que o localStorage foi salvo antes do redirecionamento
+      setTimeout(() => {
+        window.location.href = 'http://localhost:3001';
+      }, 100);
     }
   };
 

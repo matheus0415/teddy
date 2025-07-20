@@ -1,6 +1,4 @@
-import * as React from "react"
-
-function SvgComponent(props) {
+function SvgComponent(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width={100}
@@ -33,7 +31,7 @@ function SvgComponent(props) {
         />
       </defs>
     </svg>
-  )
+  );
 }
 
-export default SvgComponent
+export default SvgComponent;

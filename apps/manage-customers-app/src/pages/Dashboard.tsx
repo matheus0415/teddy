@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Menu, User } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Logo from '../components/icons/logo';
@@ -15,8 +15,17 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(4);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userName, setUserName] = useState('Usuário');
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+  // Carrega o nome do usuário do localStorage
+  useEffect(() => {
+    const savedName = localStorage.getItem('userName');
+    if (savedName) {
+      setUserName(savedName);
+    }
+  }, []);
 
   // Mock data - all clients named Eduardo as shown in the image
   const allClients: Client[] = Array.from({ length: 192 }, (_, i) => ({
@@ -177,7 +186,7 @@ export default function Dashboard() {
 
             <div className="text-gray-600 text-sm flex items-center space-x-2">
               <span>
-                Olá, <span className="font-semibold">Usuário!</span>
+                Olá, <span className="font-semibold">{userName}!</span>
               </span>
               <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                 <User size={16} className="text-gray-600" />

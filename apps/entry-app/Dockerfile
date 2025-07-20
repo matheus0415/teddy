@@ -21,5 +21,7 @@ RUN rm -rf /etc/nginx/conf.d
 # Adiciona nova config
 COPY apps/entry-app/nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copia os arquivos da build Vite
-COPY ./apps/entry-app/dist /usr/share/nginx/html
+# Copia os arquivos da build Vite da etapa anterior
+COPY --from=builder /app/apps/entry-app/dist /usr/share/nginx/html
+
+EXPOSE 80
