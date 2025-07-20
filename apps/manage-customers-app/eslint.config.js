@@ -1,27 +1,64 @@
 import js from '@eslint/js';
 import globals from 'globals';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
-import tseslint from 'typescript-eslint';
-import { globalIgnores } from 'eslint/config';
-import path from 'path';
 import { fileURLToPath } from 'url';
+import path from 'path';
+import { FlatCompat } from '@eslint/eslintrc';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
+// Legacy config adapter
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+});
+
+export default [
+  js.configs.recommended,
+  ...compat.config({
     extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
+      'eslint:recommended',
+      'plugin:react/recommended',
+      'plugin:react-hooks/recommended',
+      'plugin:@typescript-eslint/recommended',
     ],
-    languageOptions: {
+    plugins: ['react', 'react-hooks', '@typescript-eslint'],
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      sourceType: 'module',
+      ecmaFeatures: {
+        jsx: true,
+      },
+      tsconfigRootDir: __dirname,
+      project: ['./tsconfig.json'],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    env: {
+      browser: true,
+      es2020: true,
+      node: true,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+  }),
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'react/react-in-jsx-scope': 'off',
+      'no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
     },
   },
-]);
+];
