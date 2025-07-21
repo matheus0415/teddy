@@ -7,20 +7,34 @@ export default function Entry() {
     e.preventDefault();
     if (name.trim()) {
       console.log('Nome digitado:', name);
-      // Salva o nome no localStorage para uso posterior
       const userName = name.trim();
-      localStorage.setItem('userName', userName);
 
-      // Log para verificar se foi salvo
-      console.log(
-        'Nome salvo no localStorage:',
-        localStorage.getItem('userName')
-      );
+      try {
+        const sharedState = JSON.parse(
+          localStorage.getItem('shared-microfrontend-state') || '{}'
+        );
+        const newState = {
+          ...sharedState,
+          userName: userName,
+          selectedClients: sharedState.selectedClients || [],
+        };
+        localStorage.setItem(
+          'shared-microfrontend-state',
+          JSON.stringify(newState)
+        );
 
-      // Pequeno delay para garantir que o localStorage foi salvo antes do redirecionamento
+        window.dispatchEvent(
+          new CustomEvent('shared-state-changed', {
+            detail: newState,
+          })
+        );
+      } catch (error) {
+        console.error('Error saving shared state:', error);
+      }
+
       setTimeout(() => {
         window.location.href = 'http://localhost:3001';
-      }, 100);
+      }, 2000);
     }
   };
 

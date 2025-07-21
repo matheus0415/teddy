@@ -16,11 +16,58 @@ export default function ViewCustomersApp() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   useEffect(() => {
-    const savedName = localStorage.getItem('userName');
-    if (savedName) {
-      setUserName(savedName);
-    }
-  }, []);
+    const loadSharedState = () => {
+      try {
+        const savedState = localStorage.getItem(
+          'shared-microfrontend-state'
+        );
+        if (savedState) {
+          const state = JSON.parse(savedState);
+          if (state.userName) {
+            setUserName(state.userName);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading shared state:', error);
+      }
+    };
+
+    loadSharedState();
+
+    const handleSharedStateChange = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.userName) {
+        setUserName(customEvent.detail.userName);
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'shared-microfrontend-state' && e.newValue) {
+        try {
+          const newState = JSON.parse(e.newValue);
+          if (newState.userName && newState.userName !== userName) {
+            setUserName(newState.userName);
+          }
+        } catch (error) {
+          console.error('Error syncing state:', error);
+        }
+      }
+    };
+
+    window.addEventListener(
+      'shared-state-changed',
+      handleSharedStateChange
+    );
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener(
+        'shared-state-changed',
+        handleSharedStateChange
+      );
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [userName]);
 
   const ClientCard = useCallback(
     ({ client }: { client: Client }) => (
@@ -55,7 +102,11 @@ export default function ViewCustomersApp() {
           sidebarOpen ? 'w-64' : 'w-0'
         }`}
       >
-        <Sidebar isOpen={sidebarOpen} />
+        <Sidebar
+          isOpen={sidebarOpen}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
 
       <div className="flex-1 flex flex-col transition-all duration-300">
@@ -70,41 +121,37 @@ export default function ViewCustomersApp() {
               </div>
             </div>
 
-            <div className="flex-1 flex justify-center">
-              <div className="flex space-x-4 md:space-x-6 lg:space-x-8 px-2">
-                <button
-                  className={`text-sm font-medium ${
-                    activeTab === 'Clientes'
-                      ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setActiveTab('Clientes')}
-                >
-                  Clientes
-                </button>
-                <button
-                  className={`text-sm font-medium ${
-                    activeTab === 'Clientes selecionados'
-                      ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() =>
-                    setActiveTab('Clientes selecionados')
-                  }
-                >
-                  Clientes selecionados
-                </button>
-                <button
-                  className={`text-sm font-medium ${
-                    activeTab === 'Sair'
-                      ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setActiveTab('Sair')}
-                >
-                  Sair
-                </button>
-              </div>
+            <div className="flex space-x-4 md:space-x-6 lg:space-x-8 px-2">
+              <button
+                className={`text-sm font-medium ${
+                  activeTab === 'Clientes'
+                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setActiveTab('Clientes')}
+              >
+                Clientes
+              </button>
+              <button
+                className={`text-sm font-medium ${
+                  activeTab === 'Clientes selecionados'
+                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setActiveTab('Clientes selecionados')}
+              >
+                Clientes selecionados
+              </button>
+              <button
+                className={`text-sm font-medium ${
+                  activeTab === 'Sair'
+                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setActiveTab('Sair')}
+              >
+                Sair
+              </button>
             </div>
 
             <div className="text-gray-600 text-sm flex items-center space-x-2">
@@ -120,6 +167,8 @@ export default function ViewCustomersApp() {
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">
+          
+
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-lg font-bold text-gray-900">
               Clientes selecionados:
