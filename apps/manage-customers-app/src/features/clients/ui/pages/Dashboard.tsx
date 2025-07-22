@@ -9,7 +9,7 @@ import { getClientRequest } from '../../presentation/redux/actions/get-client-ac
 import { useSelectedClients } from '../../../../contexts/useSelectedClients';
 import type { Client } from '../../domain/models/client';
 import Sidebar from '../components/Sidebar';
-import Logo from '../../../../../src/components/icons/Logo';
+import Logo from '../../../../components/icons/Logo';
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();
@@ -48,7 +48,9 @@ export default function Dashboard() {
   useEffect(() => {
     const loadSharedState = () => {
       try {
-        const savedState = localStorage.getItem('shared-microfrontend-state');
+        const savedState = localStorage.getItem(
+          'shared-microfrontend-state'
+        );
         if (savedState) {
           const state = JSON.parse(savedState);
           if (state.userName) {
@@ -82,11 +84,17 @@ export default function Dashboard() {
       }
     };
 
-    window.addEventListener('shared-state-changed', handleSharedStateChange);
+    window.addEventListener(
+      'shared-state-changed',
+      handleSharedStateChange
+    );
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      window.removeEventListener('shared-state-changed', handleSharedStateChange);
+      window.removeEventListener(
+        'shared-state-changed',
+        handleSharedStateChange
+      );
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);

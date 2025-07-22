@@ -3,7 +3,7 @@ import { Menu, User } from 'lucide-react';
 import { useSelectedClients } from '../../../../contexts/useSelectedClients';
 import type { Client } from '../../../../contexts/SelectedClientsContext';
 import Sidebar from '../components/Sidebar';
-import Logo from '../../../../../src/components/icons/Logo';
+import Logo from '../../../../components/icons/Logo';
 
 export default function ViewCustomersApp() {
   const { selectedClients, removeClient, clearAllClients } =
@@ -167,8 +167,6 @@ export default function ViewCustomersApp() {
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">
-          
-
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-lg font-bold text-gray-900">
               Clientes selecionados:
