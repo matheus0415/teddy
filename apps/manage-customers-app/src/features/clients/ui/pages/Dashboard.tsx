@@ -9,7 +9,7 @@ import { getClientRequest } from '../../presentation/redux/actions/get-client-ac
 import { useSelectedClients } from '../../../../contexts/useSelectedClients';
 import type { Client } from '../../domain/models/client';
 import Sidebar from '../components/Sidebar';
-import Logo from '../../../../components/icons/Logo';
+import Logo from '../../../../../src/components/icons/Logo';
 
 export default function Dashboard() {
   const dispatch = useAppDispatch();

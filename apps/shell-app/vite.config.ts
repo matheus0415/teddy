@@ -6,10 +6,12 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: 'view-customer-app',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './ViewCustomersApp': './src/ViewCustomersApp.tsx',
+      name: 'shell-app',
+      remotes: {
+        'manage-customers-app':
+          'http://localhost:3001/assets/remoteEntry.js',
+        'view-customers-app':
+          'http://localhost:3002/assets/remoteEntry.js',
       },
       shared: [
         'react',

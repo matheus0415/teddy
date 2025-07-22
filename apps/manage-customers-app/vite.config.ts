@@ -15,7 +15,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'react-router-dom',
-        '@/packages/ui',
+        '@teddy/ui',
       ],
     }),
   ],

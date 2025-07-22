@@ -13,6 +13,7 @@ export default tseslint.config([
   { ignores: ['dist'] },
   {
     files: ['**/*.{ts,tsx}'],
+    ignores: ['vite.config.ts'],
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
@@ -36,6 +37,27 @@ export default tseslint.config([
         { allowConstantExport: true },
       ],
       'react/react-in-jsx-scope': 'off',
+      'no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  {
+    files: ['vite.config.ts'],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: './tsconfig.node.json',
+      },
+    },
+    rules: {
       'no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
