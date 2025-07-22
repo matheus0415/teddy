@@ -1,19 +1,22 @@
 # 🧸 Teddy - Sistema de Gerenciamento de Clientes
 
-> Sistema completo de gerenciamento de clientes desenvolvido com arquitetura de **microfrontends**, utilizando **React**, **TypeScript**, **Tailwind CSS** e **Module Federation**.
+> Sistema completo de gerenciamento de clientes desenvolvido com arquitetura de **microfrontends**, utilizando **React 19**, **TypeScript**, **Tailwind CSS** e **Module Federation** com **Vite 7**.
 
 ## 🚀 Visão Geral
 
-O Teddy é uma aplicação moderna que implementa arquitetura de microfrontends, permitindo desenvolvimento, deploy e manutenção independentes de cada módulo. O sistema consiste em três aplicações principais que se comunicam entre si para oferecer uma experiência completa de gerenciamento de clientes.
+O Teddy é uma aplicação moderna que implementa arquitetura de microfrontends, permitindo desenvolvimento, deploy e manutenção independentes de cada módulo. O sistema consiste em três aplicações principais que se comunicam entre si para oferecer uma experiência completa de gerenciamento de clientes, utilizando as tecnologias mais recentes do ecossistema React.
 
 ### ✨ Funcionalidades Principais
 
-- 🔐 **Sistema de Login** - Autenticação simples com persistência de dados
+- 🔐 **Sistema de Login** - Autenticação simples com persistência de dados via localStorage
 - 👥 **Dashboard de Clientes** - Interface completa para visualização e gerenciamento
-- 📊 **Paginação Dinâmica** - Sistema avançado de paginação com controle de itens por página
-- 🎨 **Interface Responsiva** - Design moderno com Tailwind CSS
-- 🔄 **Navegação entre Apps** - Comunicação seamless entre microfrontends
-- 🐳 **Deploy com Docker** - Containerização completa para produção
+- 📊 **Paginação Dinâmica** - Sistema avançado de paginação com controle flexível de itens
+- 🎨 **Interface Responsiva** - Design moderno com Tailwind CSS 3.4+
+- 🔄 **Navegação entre Apps** - Comunicação seamless entre microfrontends via Module Federation
+- 🐳 **Deploy com Docker** - Containerização completa com Nginx para produção
+- 🏗️ **Arquitetura DDD** - Domain-Driven Design com separação clara de responsabilidades
+- 🛡️ **TypeScript Strict** - Tipagem rigorosa para maior confiabilidade
+- ⚡ **Vite 7** - Build tool ultrarrápido com HMR
 
 ## 🏗️ Arquitetura do Sistema
 
@@ -21,52 +24,75 @@ O Teddy é uma aplicação moderna que implementa arquitetura de microfrontends,
 
 ```
 📁 teddy/
-├── 🎯 apps/                      # Aplicações de microfrontend
-│   ├── 🚪 entry-app/             # Aplicativo de entrada (login)
-│   │   ├── src/pages/Entry.tsx   # Tela de login
+├── 🎯 apps/                          # Aplicações de microfrontend
+│   ├── 🚪 entry-app/                 # Shell app (aplicação host)
+│   │   ├── src/pages/Entry.tsx       # Tela de entrada/login
+│   │   ├── vite.config.ts            # Config Module Federation (host)
 │   │   └── 🌐 Port: 3000
 │   │
-│   ├── 👨‍💼 manage-customers-app/   # Dashboard principal
-│   │   ├── src/pages/Dashboard.tsx
-│   │   ├── src/components/Sidebar.tsx
+│   ├── 👨‍💼 manage-customers-app/       # Dashboard principal (remote)
+│   │   ├── src/ManageCustomersApp.tsx # App principal
+│   │   ├── src/domain/               # Domain layer (DDD)
+│   │   ├── src/features/             # Features organizadas
+│   │   ├── src/store/                # Redux Toolkit + Saga
+│   │   ├── src/contexts/             # React Context APIs
+│   │   ├── vite.config.ts            # Config Module Federation (remote)
 │   │   └── 🌐 Port: 3001
 │   │
-│   └── 👀 view-customers-app/     # Visualização de clientes
-│       └── 🌐 Port: 3002
+│   ├── 👀 view-customers-app/         # Visualização de clientes (remote)
+│   │   ├── src/ViewCustomersApp.tsx  # App de visualização
+│   │   ├── src/pages/                # Páginas da aplicação
+│   │   ├── src/features/             # Features específicas
+│   │   ├── vite.config.ts            # Config Module Federation (remote)
+│   │   └── 🌐 Port: 3002
+│   │
+│   └── 🐚 shell-app/                 # Shell compartilhado (em desenvolvimento)
 │
-├── 📦 packages/                  # Bibliotecas compartilhadas
-│   └── ui/                       # Componentes UI reutilizáveis
+├── 📦 packages/                      # Bibliotecas compartilhadas
+│   └── ui/                           # Componentes UI reutilizáveis
+│       ├── src/Button.tsx            # Componentes base
+│       ├── src/icons/                # Ícones personalizados
+│       └── src/contexts/             # Contexts compartilhados
 │
-├── ⚙️ config/                    # Configurações compartilhadas
-│   ├── tailwind/                 # Configuração do Tailwind CSS
-│   ├── postcss/                  # Configuração do PostCSS
-│   ├── typescript/               # Configuração do TypeScript
-│   └── eslint/                   # Configuração do ESLint
+├── ⚙️ config/                        # Configurações compartilhadas
+│   ├── tailwind/base.config.js       # Config base Tailwind CSS
+│   ├── postcss/base.config.js        # Config base PostCSS  
+│   ├── typescript/base.tsconfig.json # Config base TypeScript
+│   └── eslint/base.config.js         # Config base ESLint
 │
-└── 🐳 docker-compose.yml         # Orquestração de containers
+├── 🐳 docker-compose.yml             # Orquestração de containers
+├── 📦 package.json                   # Workspace configuration
+└── 🔧 eslint.config.js               # Config ESLint global
 ```
 
 ### Fluxo de Navegação
 
 ```mermaid
 graph TD
-    A[👤 Entry App :3000] --> B[📝 Login Form]
-    B --> C[💾 localStorage]
-    C --> D[🔄 Redirect to :3001]
-    D --> E[🎯 Manage Customers App]
-    E --> F[📊 Dashboard with User Data]
+    A[👤 Entry App :3000<br/>Shell/Host App] --> B[📝 Login Form]
+    B --> C[💾 localStorage<br/>User Data]
+    C --> D[🔄 Module Federation<br/>Load Remote Apps]
+    D --> E[🎯 Manage Customers App :3001<br/>Remote App]
+    D --> F[👀 View Customers App :3002<br/>Remote App] 
+    E --> G[📊 Dashboard with Clients]
+    F --> H[📋 Client List View]
+    G --> I[🔄 Inter-app Communication]
+    H --> I
+    I --> J[🛡️ Shared State Management]
 ```
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Categoria           | Tecnologias                        |
-| ------------------- | ---------------------------------- |
-| **Frontend**        | React 18, TypeScript, Tailwind CSS |
-| **Build System**    | Vite 7, Module Federation          |
-| **Arquitetura**     | Microfrontends, Workspaces         |
-| **Containerização** | Docker, Docker Compose             |
-| **Linting/Quality** | ESLint, TypeScript Strict          |
-| **Estilização**     | Tailwind CSS, Lucide Icons         |
+| Categoria           | Tecnologias                                    | Versão    |
+| ------------------- | ---------------------------------------------- | --------- |
+| **Frontend**        | React, TypeScript, Tailwind CSS               | 19.1, 5.8, 3.4 |
+| **Build System**    | Vite, Module Federation                        | 7.0, 1.4  |
+| **State Management** | Redux Toolkit, Redux Saga, Context API        | Latest    |
+| **Arquitetura**     | Microfrontends, Monorepo Workspaces, DDD      | -         |
+| **Containerização** | Docker, Docker Compose, Nginx                 | Latest    |
+| **Linting/Quality** | ESLint 9, TypeScript Strict Mode              | 9.30, 5.8 |
+| **Estilização**     | Tailwind CSS, PostCSS, Lucide Icons           | 3.4, 8.4, 0.525 |
+| **Routing**         | React Router DOM                               | 7.7       |
 
 ## 📋 Pré-requisitos
 
