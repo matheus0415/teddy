@@ -14,21 +14,9 @@ export default function Sidebar({
 }: SidebarProps) {
   const navigateTo = (route: string, newTab = false) => {
     const routes = {
-      home:
-        import.meta.env.VITE_ENTRY_APP_URL?.replace(
-          '/assets/remoteEntry.js',
-          ''
-        ) || 'http://localhost:3000',
-      manageCustomers:
-        import.meta.env.VITE_MANAGE_CUSTOMERS_URL?.replace(
-          '/assets/remoteEntry.js',
-          ''
-        ) || 'http://localhost:3001',
-      viewCustomers:
-        import.meta.env.VITE_VIEW_CUSTOMERS_URL?.replace(
-          '/assets/remoteEntry.js',
-          ''
-        ) || 'http://localhost:3002',
+      home: import.meta.env.VITE_ENTRY_APP_URL,
+      manageCustomers: import.meta.env.VITE_MANAGE_CUSTOMERS_URL,
+      viewCustomers: import.meta.env.VITE_VIEW_CUSTOMERS_URL,
     };
 
     const url = routes[route as keyof typeof routes];
