@@ -36,7 +36,7 @@ export default function Entry() {
         const manageCustomersUrl = import.meta.env
           .VITE_MANAGE_CUSTOMERS_URL;
         window.location.href = manageCustomersUrl;
-      }, 2000);
+      }, 100);
     }
   };
 
