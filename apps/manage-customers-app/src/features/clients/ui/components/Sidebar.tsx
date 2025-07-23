@@ -1,5 +1,5 @@
 import { Home, UserCheck, Users, LogOut } from 'lucide-react';
-import Logo from '../../../../components/icons/Logo';
+import Logo from '../../../../components/icons/logo';
 
 interface SidebarProps {
   isOpen: boolean;
