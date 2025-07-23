@@ -13,12 +13,7 @@ export default defineConfig({
         'view-customers-app':
           'http://localhost:3002/assets/remoteEntry.js',
       },
-      shared: [
-        'react',
-        'react-dom',
-        'react-router-dom',
-        '@teddy/ui',
-      ],
+      shared: ['react', 'react-dom', 'react-router-dom', '@teddy/ui'],
     }),
   ],
   resolve: {

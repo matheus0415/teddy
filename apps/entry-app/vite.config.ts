@@ -9,15 +9,13 @@ export default defineConfig({
       name: 'entry-app',
       remotes: {
         'manage-customers-app':
+          process.env.VITE_MANAGE_CUSTOMERS_URL ||
           'http://localhost:3001/assets/remoteEntry.js',
         'view-customers-app':
+          process.env.VITE_VIEW_CUSTOMERS_URL ||
           'http://localhost:3002/assets/remoteEntry.js',
       },
-      shared: [
-        'react',
-        'react-dom',
-        'react-router-dom',
-      ],
+      shared: ['react', 'react-dom', 'react-router-dom'],
     }),
   ],
   resolve: {

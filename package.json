@@ -8,6 +8,9 @@
   "scripts": {
     "dev": "npm run --workspaces --if-present dev",
     "build": "npm run --workspaces --if-present build",
+    "build:shell": "cd apps/entry-app && npm run build",
+    "build:manage": "cd apps/manage-customers-app && npm run build",
+    "build:view": "cd apps/view-customers-app && npm run build",
     "lint": "eslint \"apps/**/src/**/*.{js,jsx,ts,tsx}\""
   },
   "devDependencies": {

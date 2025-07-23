@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "teddy-shell",
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite"
+}

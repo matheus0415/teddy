@@ -11,11 +11,7 @@ export default defineConfig({
       exposes: {
         './ManageCustomersApp': './src/ManageCustomersApp.tsx',
       },
-      shared: [
-        'react',
-        'react-dom',
-        'react-router-dom',
-      ],
+      shared: ['react', 'react-dom', 'react-router-dom'],
     }),
   ],
   resolve: {
