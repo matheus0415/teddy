@@ -110,58 +110,55 @@ export default function ViewCustomersApp() {
       </div>
 
       <div className="flex-1 flex flex-col transition-all duration-300">
-        <header className="bg-white border-b border-gray-200">
-          <div className="flex items-center px-6 py-4 relative">
-            <div className="flex items-center space-x-4">
-              <button className="p-2" onClick={toggleSidebar}>
-                <Menu size={20} />
-              </button>
-              <div className="flex items-center space-x-2">
-                <Logo width={80} height={40} />
-              </div>
+        <header className=" items-center flex justify-between px-6 py-4 relative bg-white flex justify-between border-b border-gray-200">
+          <div className="flex items-center space-x-4">
+            <button className="p-2" onClick={toggleSidebar}>
+              <Menu size={20} />
+            </button>
+            <div className="flex items-center space-x-2">
+              <Logo width={80} height={40} />
             </div>
+          </div>
 
-            <div className="flex space-x-4 md:space-x-6 lg:space-x-8 px-2">
-              <button
-                className={`text-sm font-medium ${
-                  activeTab === 'Clientes'
-                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-                onClick={() => setActiveTab('Clientes')}
-              >
-                Clientes
-              </button>
-              <button
-                className={`text-sm font-medium ${
-                  activeTab === 'Clientes selecionados'
-                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-                onClick={() => setActiveTab('Clientes selecionados')}
-              >
-                Clientes selecionados
-              </button>
-              <button
-                className={`text-sm font-medium ${
-                  activeTab === 'Sair'
-                    ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-                onClick={() => setActiveTab('Sair')}
-              >
-                Sair
-              </button>
-            </div>
+          <div className="flex space-x-4 md:space-x-6 lg:space-x-8 px-2">
+            <button
+              className={`text-sm font-medium ${
+                activeTab === 'Clientes'
+                  ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('Clientes')}
+            >
+              Clientes
+            </button>
+            <button
+              className={`text-sm font-medium ${
+                activeTab === 'Clientes selecionados'
+                  ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('Clientes selecionados')}
+            >
+              Clientes selecionados
+            </button>
+            <button
+              className={`text-sm font-medium ${
+                activeTab === 'Sair'
+                  ? 'text-orange-500 underline decoration-orange-500 decoration-2 underline-offset-4'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveTab('Sair')}
+            >
+              Sair
+            </button>
+          </div>
 
-            <div className="text-gray-600 text-sm flex items-center space-x-2">
-              <span>
-                Olá,{' '}
-                <span className="font-semibold">{userName}!</span>
-              </span>
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                <User size={16} className="text-gray-600" />
-              </div>
+          <div className="text-gray-600 text-sm flex items-center space-x-2">
+            <span>
+              Olá, <span className="font-semibold">{userName}!</span>
+            </span>
+            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+              <User size={16} className="text-gray-600" />
             </div>
           </div>
         </header>
