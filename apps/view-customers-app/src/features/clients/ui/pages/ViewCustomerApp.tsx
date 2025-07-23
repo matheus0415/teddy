@@ -3,7 +3,7 @@ import { Menu, User } from 'lucide-react';
 import { useSelectedClients } from '../../../../contexts/useSelectedClients';
 import type { Client } from '../../../../contexts/SelectedClientsContext';
 import Sidebar from '../components/Sidebar';
-import Logo from '../../../../components/icons/logo';
+import Logo from '../../../../components/icons/logo.tsx';
 
 export default function ViewCustomersApp() {
   const { selectedClients, removeClient, clearAllClients } =
