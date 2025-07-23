@@ -70,7 +70,7 @@ export default function Sidebar({
           <div className="px-4 space-y-2">
             <button
               className="flex items-center w-full p-2 rounded hover:bg-gray-700 transition-colors"
-              onClick={() => navigateTo('home', true)}
+              onClick={() => navigateTo('home')}
               title="Ir para página inicial"
             >
               <Home size={20} className="mr-3" />
@@ -96,7 +96,7 @@ export default function Sidebar({
                   ? 'bg-orange-500 text-white'
                   : 'hover:bg-gray-700'
               }`}
-              onClick={() => navigateTo('viewCustomers', true)}
+              onClick={() => navigateTo('viewCustomers')}
               title="Ver clientes selecionados"
             >
               <UserCheck size={20} className="mr-3" />
