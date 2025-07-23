@@ -33,7 +33,8 @@ export default function Entry() {
       }
 
       setTimeout(() => {
-        window.location.href = 'http://localhost:3001';
+        const manageCustomersUrl = import.meta.env.VITE_MANAGE_CUSTOMERS_URL?.replace('/assets/remoteEntry.js', '') || 'http://localhost:3001';
+        window.location.href = manageCustomersUrl;
       }, 2000);
     }
   };
